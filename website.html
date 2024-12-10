@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the NFL Player</title>
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <style>
+        /* Centering the entire page */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #player-image {
+            max-width: 300px;
+            max-height: 400px;
+            margin-bottom: 20px;
+        }
+
+        #guess-container {
+            margin-bottom: 10px;
+        }
+
+        #user-guess {
+            padding: 10px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        #submit-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #game-message {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guess the NFL Player</h1>
+    <div id="game-container">
+        <img id="player-image" src="" alt="NFL Player">
+        <div id="guess-container">
+            <input id="user-guess" type="text" placeholder="Enter player's name...">
+            <button id="submit-button">Submit</button>
+        </div>
+        <p id="game-message"></p>
+    </div>
+
+    <py-script>
+        import random
+        from js import document
+
+        # Player pictures
+        IMAGE_FOLDER = "images"
+
+        # List of NFL players with corresponding names and image files
+        nfl_players = [
+            {"name": "Patrick Mahomes", "file": "patrick_mahomes_kc_qb.jpg"},
+            {"name": "Jalen Hurts", "file": "jalen_hurts_phi_qb.jpg"},
+            {"name": "Josh Allen", "file": "josh_allen_buf_qb.jpg"},
+            {"name": "Gerald Everett", "file": "gerald_everett_lac_te.jpg"},
+            {"name": "Joe Burrow", "file": "joe_burrow_cin_qb.jpg"},
+            {"name": "Justin Herbert", "file": "justin_herbert_lac_qb.jpg"},
+            {"name": "Trevor Lawrence", "file": "trevor_lawrence_jax_qb.jpg"},
+            {"name": "Lamar Jackson", "file": "lamar_jackson_bal_qb.jpg"},
+            {"name": "Aaron Rodgers", "file": "aaron_rodgers_nyj_qb.jpg"},
+            {"name": "Dak Prescott", "file": "dak_prescott_dal_qb.jpg"},
+            {"name": "Kirk Cousins", "file": "kirk_cousins_atl_qb.jpg"},
+            {"name": "Geno Smith", "file": "geno_smith_sea_qb.jpg"},
+            {"name": "Tua Tagovailoa", "file": "tua_tagovailoa_mia_qb.jpg"},
+            {"name": "Matthew Stafford", "file": "matthew_stafford_lar_qb.jpg"},
+            {"name": "Jared Goff", "file": "jared_goff_det_qb.jpg"},
+            {"name": "Deshaun Watson", "file": "deshaun_watson_cle_qb.jpg"},
+            {"name": "Russell Wilson", "file": "russell_wilson_pit_qb.jpg"},
+            {"name": "Kyler Murray", "file": "kyler_murray_ari_qb.jpg"},
+            {"name": "Christian McCaffrey", "file": "christian_mccaffrey_sf_rb.jpg"},
+            {"name": "Derrick Henry", "file": "derrick_henry_bal_rb.jpg"},
+            {"name": "Nick Chubb", "file": "nick_chubb_cle_rb.jpg"},
+            {"name": "Saquon Barkley", "file": "saquon_barkley_phi_rb.jpg"},
+            {"name": "Austin Ekeler", "file": "austin_ekeler_lac_rb.jpg"},
+            {"name": "Jonathan Taylor", "file": "jonathan_taylor_ind_rb.jpg"},
+            {"name": "Tony Pollard", "file": "tony_pollard_dal_rb.jpg"},
+            {"name": "Josh Jacobs", "file": "josh_jacobs_lv_rb.jpg"},
+            {"name": "Bijan Robinson", "file": "bijan_robinson_atl_rb.jpg"},
+            {"name": "Kenneth Walker III", "file": "kenneth_walker-iii_sea_rb.jpg"},
+            {"name": "Alvin Kamara", "file": "alvin_kamara_no_rb.jpg"},
+            {"name": "Travis Etienne", "file": "travis_etienne_jax_rb.jpg"},
+            {"name": "Aaron Jones", "file": "aaron_jones_min_rb.jpg"},
+            {"name": "Raheem Mostert", "file": "raheem_mostert_mia_rb.jpg"},
+            {"name": "Justin Jefferson", "file": "justin_jefferson_min_wr.jpg"},
+            {"name": "Tyreek Hill", "file": "tyreek_hill_mia_wr.jpg"},
+            {"name": "Davante Adams", "file": "davante_adams_lv_wr.jpg"},
+            {"name": "Ja'Marr Chase", "file": "ja'marr_chase_cin_wr.jpg"},
+            {"name": "Stefon Diggs", "file": "stefon_diggs_buf_wr.jpg"},
+            {"name": "Cooper Kupp", "file": "cooper_kupp_lar_wr.jpg"},
+            {"name": "AJ Brown", "file": "aj_brown_phi_wr.jpg"},
+            {"name": "CeeDee Lamb", "file": "ceedee_lamb_dal_wr.jpg"},
+            {"name": "Deebo Samuel", "file": "deebo_samuel_sf_wr.jpg"},
+            {"name": "Garrett Wilson", "file": "garrett_wilson_nyj_wr.jpg"},
+            {"name": "Jaylen Waddle", "file": "jaylen_waddle_mia_wr.jpg"},
+            {"name": "Tee Higgins", "file": "tee_higgins_cin_wr.jpg"},
+            {"name": "Amon-Ra St. Brown", "file": "amon-ra_st-brown_det_wr.jpg"},
+            {"name": "DK Metcalf", "file": "dk_metcalf_sea_wr.jpg"},
+            {"name": "Chris Godwin", "file": "chris_godwin_tb_wr.jpg"},
+            {"name": "Mike Evans", "file": "mike_evans_tb_wr.jpg"},
+            {"name": "Travis Kelce", "file": "travis_kelce_kc_te.jpg"},
+            {"name": "George Kittle", "file": "george_kittle_sf_te.jpg"},
+            {"name": "Mark Andrews", "file": "mark_andrews_bal_te.jpg"},
+            {"name": "TJ Hockenson", "file": "tj_hockenson_min_te.jpg"},
+            {"name": "Dallas Goedert", "file": "dallas_goedert_phi_te.jpg"},
+            {"name": "Kyle Pitts", "file": "kyle_pitts_atl_te.jpg"},
+            {"name": "Micah Parsons", "file": "micah_parsons_dal_lb.jpg"},
+            {"name": "Fred Warner", "file": "fred_warner_sf_mlb.jpg"},
+            {"name": "T.J. Watt", "file": "tj_watt_pit_olb.jpg"},
+            {"name": "Nick Bosa", "file": "nick_bosa_sf_de.jpg"},
+            {"name": "Myles Garrett", "file": "myles_garrett_cle_de.jpg"},
+            {"name": "Maxx Crosby", "file": "maxx_crosby_lv_de.jpg"},
+            {"name": "Haason Reddick", "file": "haason_reddick_nyj_olb.jpg"},
+            {"name": "Quinnen Williams", "file": "quinnen_williams_nyj_nt.jpg"},
+            {"name": "Chris Jones", "file": "chris_jones_kc_de.jpg"},
+            {"name": "Sauce Gardner", "file": "sauce_gardner_nyj_cb.jpg"},
+            {"name": "Jalen Ramsey", "file": "jalen_ramsey_mia_cb.jpg"},
+            {"name": "Patrick Surtain II", "file": "patrick_surtain-ii_den_cb.jpg"},
+            {"name": "Trevon Diggs", "file": "trevon_diggs_dal_cb.jpg"},
+            {"name": "Darius Slay", "file": "darius_slay_phi_cb.jpg"},
+            {"name": "Xavien Howard", "file": "xavien_howard_mia_cb.jpg"},
+            {"name": "Derwin James", "file": "derwin_james_lac_fs.jpg"},
+            {"name": "Minkah Fitzpatrick", "file": "minkah_fitzpatrick_pit_fs.jpg"},
+            {"name": "Kevin Byard", "file": "kevin_byard_chi_fs.jpg"},
+            {"name": "Harrison Smith", "file": "harrison_smith_min_fs.jpg"},
+            {"name": "Jordan Poyer", "file": "jordan_poyer_buf_fs.jpg"},
+            {"name": "Justin Tucker", "file": "justin_tucker_bal_k.jpg"},
+            {"name": "Evan McPherson", "file": "evan_mcpherson_cin_k.jpg"},
+            {"name": "Harrison Butker", "file": "harrison_butker_kc_k.jpg"},
+            {"name": "Daniel Carlson", "file": "daniel_carlson_lv_k.jpg"}
+        ]
+
+        # Randomly shuffles image and player
+        def reset_game():
+            random.shuffle(nfl_players)  # Shuffle the player list
+            global current_index
+            current_index = 0
+            global score
+            score = 0
+            new_round()
+
+        # New round when incorrect
+        def new_round():
+            global current_index
+            global score
+            if current_index < len(nfl_players):
+                current_player = nfl_players[current_index]
+                image_path = f"{IMAGE_FOLDER}/{current_player['file']}"
+                player_image = document.getElementById("player-image")
+                player_image.src = image_path
+                user_guess = document.getElementById("user-guess")
+                user_guess.value = ""
+                game_message = document.getElementById("game-message")
+                game_message.innerText = f"Score: {score}"
+                current_index += 1
+            else:
+                game_message = document.getElementById("game-message")
+                game_message.innerText = "All players guessed. Restarting..."
+                reset_game()
+
+        # Function to check the user's guess
+        def check_guess(event):
+            global score
+            global current_index
+            user_guess = document.getElementById("user-guess")
+            guess = user_guess.value.strip().lower()
+            if current_index > 0:
+                correct_name = nfl_players[current_index - 1]["name"].strip().lower()
+
+                # Compare the user's guess with the correct name
+                game_message = document.getElementById("game-message")
+                if guess == correct_name:
+                    score += 1
+                    game_message.innerText = "Correct! Moving to the next image..."
+                    new_round()  # Move to the next round after correct guess
+                else:
+                    game_message.innerText = f"Incorrect! Restarting..."
+                    reset_game()
+
+        # Get the submit button and bind it to the check_guess function
+        submit_button = document.getElementById("submit-button")
+        submit_button.onclick = check_guess
+
+        # Start the first round
+        reset_game()
+    </py-script>
+</body>
+</html>
