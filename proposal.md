@@ -36,4 +36,4 @@ Website to look really nice, two modes like previously stated, and possibly anot
 
 ## In a paragraph or more, outline your next steps. What new skills will you need to acquire? What topics will you need to research? If working with one of two classmates, who will do what?
 
-First, I will need to 
+First, I will need to learn how to use HTML to create a website for my game. I need to deepen my understanding on many interactive elements and how I can create them into functions on python to reach my goal. I will also need to learn how to put images of the NFL players on a website and their associated images, ensuring all the data is organized efficenly. Then I will need to learn CSS aspects so I can modify my website to my liking. 
