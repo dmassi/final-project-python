@@ -152,7 +152,7 @@
             {"name": "Daniel Carlson", "file": "daniel_carlson_lv_k.jpg"}
         ]
 
-        # Randomly shuffles image and player
+        # Randomly shuffles each player with they picture
         def reset_game():
             random.shuffle(nfl_players)  # Shuffle the player list
             global current_index
@@ -161,7 +161,7 @@
             score = 0
             new_round()
 
-        # New round when incorrect
+        # New round when wrong
         def new_round():
             global current_index
             global score
@@ -180,7 +180,7 @@
                 game_message.innerText = "All players guessed. Restarting..."
                 reset_game()
 
-        # Function to check the user's guess
+        # Checks the user's guess
         def check_guess(event):
             global score
             global current_index
@@ -199,11 +199,11 @@
                     game_message.innerText = f"Incorrect! Restarting..."
                     reset_game()
 
-        # Get the submit button and bind it to the check_guess function
+        # 
         submit_button = document.getElementById("submit-button")
         submit_button.onclick = check_guess
 
-        # Start the first round
+        # Start the first round of game and reset
         reset_game()
     </py-script>
 </body>
